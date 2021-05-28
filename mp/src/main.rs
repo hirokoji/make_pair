@@ -1,6 +1,6 @@
 use structopt::StructOpt;
-use rand::Rng;
 use std::char;
+use rand::Rng;
 
 #[derive(StructOpt)]
 struct Cli {
@@ -9,6 +9,13 @@ struct Cli {
 
 fn main() {
     let args = Cli::from_args();
+
+    if !validate_input_members(&args.members) {
+        println!("Error: Unexpected input format. Please check your input members format.");
+        println!("Usage: $ mp Hiro,Walter,Ian,Gabe");
+        return;
+    }
+
     let teams = random_assign_teams(args.members);
 
     let mut alphabet:u32 = 65; // 'A'
@@ -20,7 +27,7 @@ fn main() {
     }
 }
 
-fn random_assign_teams(members_string: String) -> Vec<Vec<String>>{
+pub fn random_assign_teams(members_string: String) -> Vec<Vec<String>>{
 
     let mut members: Vec<&str> = members_string.split(',').collect();
     let members_num = members.len();
@@ -46,6 +53,19 @@ fn random_assign_teams(members_string: String) -> Vec<Vec<String>>{
     team
 }
 
+fn validate_input_members(members_string: &String) -> bool {
+    if members_string.chars().last().unwrap() == ',' {
+        return false
+    }
+    true
+}
+
+
+
+
+
+
+
 
 #[test]
 fn check_random_assign_teams(){
@@ -53,3 +73,10 @@ fn check_random_assign_teams(){
     assert!(result == [["hiro","koji"]] || result == [["koji","hiro"]]);
 }
 
+#[test]
+fn check_validate_input_members(){
+    let members_correct = "hiro,koji".to_string();
+    let members_incorrect = "hiro,koji,".to_string();
+    assert_eq!(validate_input_members(&members_correct), true);
+    assert_eq!(validate_input_members(&members_incorrect), false);
+}
