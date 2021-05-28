@@ -9,7 +9,7 @@ struct Cli {
 
 fn main() {
     let args = Cli::from_args();
-    let teams = random_assign(args.members);
+    let teams = random_assign_teams(args.members);
 
     let mut alphabet:u32 = 65; // 'A'
     for team in teams {
@@ -20,7 +20,7 @@ fn main() {
     }
 }
 
-fn random_assign(members_string: String) -> Vec<Vec<String>>{
+fn random_assign_teams(members_string: String) -> Vec<Vec<String>>{
 
     let mut members: Vec<&str> = members_string.split(',').collect();
     let members_num = members.len();
@@ -47,10 +47,9 @@ fn random_assign(members_string: String) -> Vec<Vec<String>>{
 }
 
 
-
 #[test]
-fn check_random_assign(){
-    let result = random_assign("hiro,koji".to_string());
+fn check_random_assign_teams(){
+    let result = random_assign_teams("hiro,koji".to_string());
     assert!(result == [["hiro","koji"]] || result == [["koji","hiro"]]);
 }
 
