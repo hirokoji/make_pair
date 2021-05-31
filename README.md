@@ -3,9 +3,7 @@ This script assign members to make pair/mob programming team
 
 ## Install
 ```shell
-$ cd mp
-$ cargo build --release
-$ cp target/release/mp /usr/local/bin
+./install
 ```
 
 ## Usage

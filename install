@@ -1,0 +1,4 @@
+#!/bin/bash
+cd mp
+cargo build --release
+cp target/release/mp /usr/local/bin/mp
