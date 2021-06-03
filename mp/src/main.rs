@@ -1,14 +1,10 @@
+mod files;
+
+use std::io;
 use structopt::StructOpt;
 use std::char;
 use rand::Rng;
 use chrono::Utc;
-
-use std::io;
-use std::path::Path;
-use std::ops::Not;
-use std::fs::{create_dir, File, OpenOptions};
-use std::io::{Write, BufReader, BufRead};
-use std::writeln;
 
 #[derive(StructOpt)]
 struct Cli {
@@ -27,29 +23,34 @@ fn main() {
     let teams = random_assign_teams(args.members);
 
     let mut alphabet:u32 = 65; // 'A'
-    let mut history:String = String::from(format!("[{}] " ,Utc::now().to_string()));
+    let mut results:String = String::from(format!("[{}] ", Utc::now().to_string()));
 
     for team in teams {
-        let mut output = format!("Team {}: ",char::from_u32(alphabet).unwrap());
-        for member in team { output.push_str(&(format!("{} ", member))) }
+        let mut result = format!("Team {}: ", char::from_u32(alphabet).unwrap());
+        for member in team { result.push_str(&(format!("{} ", member))) }
 
-        print!("{}\n", output);
-        history.push_str(&output);
+        print!("{}\n", result);
+        results.push_str(&result);
         alphabet+=1;
     }
 
-    ask_save_history(&mut history)
+    ask_save_history(&mut results)
 }
 
-fn ask_save_history(history: &mut String) {
+fn ask_save_history(results: &mut String) {
+
+    let home = std::env::var("HOME").unwrap();
+    let history_dir = home + "/.mp";
+    let history = files::History::new(&history_dir, "mp_history");
+
     loop {
         println!("\nDo you save the result to history? [y/n]: ");
         let mut input = String::new();
         io::stdin().read_line(&mut input).unwrap();
         match input.trim() {
             "y" | "yes" => {
-                save_history(&history);
-                println!("saved the result");
+                history.save(&results);
+                println!("Saved the result");
                 break;
             }
             "n" | "no" => { break; }
@@ -91,45 +92,6 @@ fn validate_input_members(members_string: &String) -> bool {
     true
 }
 
-fn save_history(result:&str){
-
-    let dir_name = ".mp";
-    let file_name = "mp_history";
-    let home = std::env::var("HOME").unwrap();
-    let home_path = Path::new(&home);
-
-    let pj_path = home_path.join(dir_name);
-    if pj_path.exists().not() {
-        create_dir(&pj_path).expect(&format!("Can't create dir ({}) to store history", pj_path.display()));
-    }
-
-    let history_path = pj_path.join(file_name);
-    if history_path.exists().not() {
-        File::create(&history_path).expect(&format!("Can't create file ({}) to store history", history_path.display()));
-    }
-
-    let mut file = OpenOptions::new().write(true).append(true).open(history_path).unwrap();
-    writeln!(file,"{}", result).unwrap();
-
-}
-
-fn get_history() -> String{
-
-    let dir_name = ".mp";
-    let file_name = "mp_history";
-    let home = std::env::var("HOME").unwrap();
-    let home_path = Path::new(&home);
-    let history_path = home_path.join(dir_name).join(file_name);
-
-    let file = OpenOptions::new().read(true).append(true).open(history_path).unwrap();
-    let reader = BufReader::new(file);
-
-    let lines: Vec<_>= reader.lines().map(|line| {line.unwrap()}).collect();
-    let last = lines.last().unwrap().to_string();
-
-    last
-}
-
 #[test]
 fn check_random_assign_teams(){
     let result = random_assign_teams("hiro,koji".to_string());
@@ -142,11 +104,4 @@ fn check_validate_input_members(){
     let members_incorrect = "hiro,koji,".to_string();
     assert_eq!(validate_input_members(&members_correct), true);
     assert_eq!(validate_input_members(&members_incorrect), false);
-}
-
-#[test]
-fn check_save_history(){
-    let keyword = "This line added from unit Test";
-    save_history(keyword);
-    assert_eq!(get_history(), keyword.to_string())
 }
