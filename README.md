@@ -9,15 +9,17 @@ This script assign members to make pair/mob programming team
 ## Usage
 You can assign pair/mob members randomly with the command.
 ```shell
-$ mp Walter,Ian,Gabe,Hiro,Ben,Charles
-Team A: Gabe Hiro
-Team B: Charles Ian
-Team C: Walter Ben
+➜ mp assign Walter,Ian,Gabe,Hiro,Ben,Charles
+Team A: Ian Ben
+Team B: Walter Gabe
+Team C: Charles Hiro
+
+Do you save the result to history? [y/n]:
+y
+Saved the result
 ```
 
 ```shell
-$ mp Walter,Ian,Gabe,Hiro,Ben,Charles,Ken
-Team A: Walter Hiro Gabe
-Team B: Ben Ken
-Team C: Charles Ian
+➜ mp history
+[2021-06-04 02:50:54.666529 UTC] Team A: Ian Ben Team B: Walter Gabe Team C: Charles Hiro
 ```
