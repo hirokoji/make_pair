@@ -27,7 +27,7 @@ impl History {
 
     }
 
-    fn get_all_lines(&self) -> Vec<String>{
+    pub fn get_all_lines(&self) -> Vec<String>{
 
         let file = OpenOptions::new().read(true).append(true).open(&self.file_path).unwrap();
         let reader = BufReader::new(file);

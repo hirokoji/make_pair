@@ -6,21 +6,50 @@ use std::char;
 use rand::Rng;
 use chrono::Utc;
 
-#[derive(StructOpt)]
-struct Cli {
-    members: String
+
+#[derive(Debug, StructOpt)]
+#[structopt(name = "example", about="how to use struct-opt crate")]
+pub struct Opts{
+    #[structopt(subcommand) ]
+    subcommands: Sub
 }
 
-fn main() {
-    let args = Cli::from_args();
+#[derive(Debug, StructOpt)]
+#[structopt(name = "sub", about = "sub commands")]
+enum Sub {
+    #[structopt(name = "assign")]
+    Assign(AssignOpts),
+    #[structopt(name = "history")]
+    History
+}
 
-    if !validate_input_members(&args.members) {
+#[derive(Debug, StructOpt)]
+struct AssignOpts {
+    members: String,
+}
+
+
+fn main() {
+    let opts = Opts::from_args();
+
+    match opts.subcommands {
+        Sub::Assign(opts)  => {
+            assign(opts.members);
+        }
+        Sub::History => {
+            history();
+        }
+    }
+}
+
+fn assign(members: String){
+    if !validate_input_members(&members) {
         println!("Error: Unexpected input format. Please check your input members format.");
         println!("Usage: $ mp Hiro,Walter,Ian,Gabe");
         return;
     }
 
-    let teams = random_assign_teams(args.members);
+    let teams = random_assign_teams(members);
 
     let mut alphabet:u32 = 65; // 'A'
     let mut results:String = String::from(format!("[{}] ", Utc::now().to_string()));
@@ -33,8 +62,26 @@ fn main() {
         results.push_str(&result);
         alphabet+=1;
     }
+    ask_save_history(&mut results);
+}
 
-    ask_save_history(&mut results)
+fn history(){
+    let home = std::env::var("HOME").unwrap();
+    let history_dir = home + "/.mp";
+    let history = files::History::new(&history_dir, "mp_history");
+
+    let mut lines = history.get_all_lines();
+    lines.reverse();
+
+    let mut max_num = 10;
+    if lines.len() < max_num{
+        max_num = lines.len();
+    }
+
+    for i in 0..max_num {
+        println!("{}", lines[i]);
+    }
+
 }
 
 fn ask_save_history(results: &mut String) {
