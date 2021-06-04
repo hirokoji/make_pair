@@ -1,2 +1,3 @@
 #!/bin/bash
+rm -r ~/.mp
 rm -i /usr/local/bin/mp
