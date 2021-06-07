@@ -4,6 +4,7 @@ use chrono::Utc;
 
 use super::helper;
 use super::files::History;
+use std::collections::HashMap;
 
 pub fn assign_cmd(members: String, history: History){
     if !helper::validate_input_members(&members) {
@@ -13,12 +14,13 @@ pub fn assign_cmd(members: String, history: History){
     }
 
     let teams = helper::random_assign_teams(members);
-
     let mut alphabet:u32 = 65; // 'A'
-    let mut results:String = String::from(format!("[{}] ", Utc::now().to_string()));
+    let roomMap: HashMap<char,char>= [('A', 'B'),('B', 'E'),('C', 'F')].iter().cloned().collect();
 
+    let mut results:String = String::from(format!("[{}] ", Utc::now().to_string()));
     for team in teams {
-        let mut result = format!("Team {}: ", char::from_u32(alphabet).unwrap());
+        let team_name = char::from_u32(alphabet).unwrap();
+        let mut result = format!("Team {} (Meeting {}): ", team_name, roomMap.get(&team_name).unwrap());
         for member in team { result.push_str(&(format!("{} ", member))) }
 
         print!("{}\n", result);
