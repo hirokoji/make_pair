@@ -38,12 +38,12 @@ fn main() {
     let history = files::History::new(&history_dir, "mp_history");
 
     match opts.subcommands {
-        Sub::Assign(opts)  => assign(opts.members, history),
-        Sub::History =>  history(history)
+        Sub::Assign(opts)  => assign_cmd(opts.members, history),
+        Sub::History =>  history_cmd(history)
     }
 }
 
-fn assign(members: String, history: History){
+fn assign_cmd(members: String, history: History){
     if !helper::validate_input_members(&members) {
         println!("Error: Unexpected input format. Please check your input members format.");
         println!("Usage: $ mp Hiro,Walter,Ian,Gabe");
@@ -66,7 +66,7 @@ fn assign(members: String, history: History){
     ask_save_history(&mut results, history);
 }
 
-fn history(history:History){
+fn history_cmd(history:History){
     display_history(history)
 }
 
