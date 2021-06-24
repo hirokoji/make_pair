@@ -33,6 +33,19 @@ pub fn validate_input_members(members_string: &String) -> bool {
     true
 }
 
+pub fn has_same_team(teams_a: &Vec<Vec<&str>>, teams_b: &Vec<Vec<&str>>) -> bool {
+
+    for team_a in teams_a {
+        for team_b in teams_b {
+            if team_a.contains(&team_b[0]) && team_a.contains(&team_b[1]) {
+                return true;
+            }
+        }
+    }
+
+    false
+}
+
 
 #[test]
 fn check_random_assign_teams(){
@@ -46,4 +59,20 @@ fn check_validate_input_members(){
     let members_incorrect = "hiro,koji,".to_string();
     assert_eq!(validate_input_members(&members_correct), true);
     assert_eq!(validate_input_members(&members_incorrect), false);
+}
+
+#[test]
+fn test_has_same_team(){
+    let teams_a = vec![vec!["ajay", "hiro"], vec!["konark", "yong"], vec!["aman", "anandita", "philp"]];
+    let teams_b = vec![vec!["ajay", "hiro"], vec!["konark", "yong"], vec!["aman", "anandita", "philp"]];
+    assert_eq!(has_same_team(&teams_a, &teams_b), true);
+
+    let teams_a = vec![vec!["ajay", "hiro"], vec!["konark", "yong"], vec!["aman", "anandita", "philp"]];
+    let teams_b = vec![vec!["ajay", "philip"], vec!["konark", "hiro"], vec!["aman", "anandita", "yong"]];
+    assert_eq!(has_same_team(&teams_a, &teams_b), true);
+
+    let teams_a = vec![vec!["ajay", "hiro"], vec!["konark", "yong"], vec!["aman", "anandita", "philp"]];
+    let teams_b = vec![vec!["ajay", "yong"], vec!["konark", "anandita"], vec!["aman", "hiro", "philp"]];
+    assert_eq!(has_same_team(&teams_a, &teams_b), false);
+
 }
