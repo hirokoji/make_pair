@@ -35,8 +35,19 @@ pub fn validate_input_members(members_string: &String) -> bool {
 
 pub fn has_same_team(teams_a: &Vec<Vec<&str>>, teams_b: &Vec<Vec<&str>>) -> bool {
 
-    for team_a in teams_a {
-        for team_b in teams_b {
+    let big_teams;
+    let small_teams;
+
+    if teams_a.len() > teams_b.len(){
+        big_teams = teams_a;
+        small_teams = teams_b;
+    }else{
+        big_teams = teams_b;
+        small_teams = teams_a;
+    }
+
+    for team_a in big_teams {
+        for team_b in small_teams {
             if team_a.contains(&team_b[0]) && team_a.contains(&team_b[1]) {
                 return true;
             }
@@ -75,4 +86,19 @@ fn test_has_same_team(){
     let teams_b = vec![vec!["ajay", "yong"], vec!["konark", "anandita"], vec!["aman", "hiro", "philp"]];
     assert_eq!(has_same_team(&teams_a, &teams_b), false);
 
+    let teams_a = vec![vec!["hiro", "yong"], vec!["aman", "philip"], vec!["konark", "yong", "philp"]];
+    let teams_b = vec![vec!["ajay", "hiro"], vec!["hiro", "yong"] ];
+    assert_eq!(has_same_team(&teams_a, &teams_b), true);
+
+    let teams_a = vec![vec!["ajay", "hiro"], vec!["hiro", "yong"] ];
+    let teams_b = vec![vec!["hiro", "yong"], vec!["aman", "philip"], vec!["konark", "yong", "philp"]];
+    assert_eq!(has_same_team(&teams_a, &teams_b), true);
+
+    let teams_a = vec![vec!["ajay", "hiro"], vec!["hiro", "konark"] ];
+    let teams_b = vec![vec!["hiro", "yong"], vec!["aman", "philip"], vec!["konark", "yong", "philp"]];
+    assert_eq!(has_same_team(&teams_a, &teams_b), false);
+
+    let teams_a = vec![vec!["hiro", "yong"], vec!["aman", "philip"], vec!["konark", "yong", "philp"]];
+    let teams_b = vec![vec!["ajay", "hiro"], vec!["hiro", "konark"] ];
+    assert_eq!(has_same_team(&teams_a, &teams_b), false);
 }
