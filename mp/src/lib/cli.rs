@@ -2,17 +2,24 @@ use std::io;
 use std::char;
 use chrono::Utc;
 
-use super::helper;
+use super::helper::{validate_input_members, random_assign_teams, has_same_team};
 use super::files::History;
 
 pub fn assign_cmd(members: String, history: History){
-    if !helper::validate_input_members(&members) {
+    if !validate_input_members(&members) {
         println!("Error: Unexpected input format. Please check your input members format.");
         println!("Usage: $ mp Hiro,Walter,Ian,Gabe");
         return;
     }
 
-    let teams = helper::random_assign_teams(members);
+    let last_teams = history.get_last_team();
+    let mut teams: Vec<Vec<String>>;
+    loop {
+        teams = random_assign_teams(&members);
+        if has_same_team(&teams, &last_teams) == false {
+            break;
+        }
+    }
 
     let mut alphabet:u32 = 65; // 'A'
     let mut results:String = String::from(format!("[{}] ", Utc::now().to_string()));

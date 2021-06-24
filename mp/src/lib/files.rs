@@ -36,7 +36,7 @@ impl History {
         lines
     }
 
-    fn get_last_team(&self) -> Vec<Vec<String>> {
+    pub fn get_last_team(&self) -> Vec<Vec<String>> {
         let last = self.get_last_line();
 
         let re = Regex::new(r"Team .: ").unwrap();
