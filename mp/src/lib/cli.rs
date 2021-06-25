@@ -2,18 +2,32 @@ use std::io;
 use std::char;
 use chrono::Utc;
 
-use super::helper;
+use super::helper::{validate_input_members, random_assign_teams, has_same_team};
 use super::files::History;
 use std::collections::HashMap;
 
 pub fn assign_cmd(members: String, history: History){
-    if !helper::validate_input_members(&members) {
+    if !validate_input_members(&members) {
         println!("Error: Unexpected input format. Please check your input members format.");
         println!("Usage: $ mp Hiro,Walter,Ian,Gabe");
         return;
     }
 
-    let teams = helper::random_assign_teams(members);
+    let teams: Vec<Vec<String>> = match history.get_last_team() {
+        Some(last_teams) => {
+            let mut teams = random_assign_teams(&members);
+            loop {
+                if has_same_team(&teams, &last_teams) == false { break; }
+                teams = random_assign_teams(&members);
+            }
+            teams
+        }
+        None => {
+            let teams = random_assign_teams(&members);
+            teams
+        }
+    };
+
     let mut alphabet:u32 = 65; // 'A'
     let room_map: HashMap<char,char>= [('A', 'B'),('B', 'E'),('C', 'F')].iter().cloned().collect();
 
