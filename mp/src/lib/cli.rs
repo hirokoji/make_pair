@@ -12,12 +12,19 @@ pub fn assign_cmd(members: String, history: History){
         return;
     }
 
-    let last_teams = history.get_last_team();
     let mut teams: Vec<Vec<String>>;
-    loop {
-        teams = random_assign_teams(&members);
-        if has_same_team(&teams, &last_teams) == false {
-            break;
+
+    match history.get_last_team() {
+        Some(last_teams) => {
+            loop {
+                teams = random_assign_teams(&members);
+                if has_same_team(&teams, &last_teams) == false {
+                    break;
+                }
+            }
+        },
+        None => {
+            teams = random_assign_teams(&members);
         }
     }
 

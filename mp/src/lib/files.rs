@@ -36,21 +36,20 @@ impl History {
         lines
     }
 
-    pub fn get_last_team(&self) -> Vec<Vec<String>> {
-        let last = self.get_last_line();
+    pub fn get_last_team(&self) -> Option<Vec<Vec<String>>> {
+        let last = self.get_last_line()?;
 
         let re = Regex::new(r"Team .: ").unwrap();
         let team_string = last.split("] ").last().unwrap();
         let team :Vec<Vec<_>> = Regex::split(&re, team_string).filter(|&team| team != "").map(|team|team.trim().split(' ').map(String::from).collect()).collect();
-        team
+        Some(team)
     }
 
-    fn get_last_line(&self) -> String{
+    fn get_last_line(&self) -> Option<String>{
 
         let lines = self.get_all_lines();
-        let last = lines.last().unwrap().to_string();
-        last
-
+        let last = lines.last()?.to_string();
+        Some(last)
     }
 }
 
@@ -63,14 +62,21 @@ fn test_history_io(){
     println!("saved to {}", history.file_path.display());
     let keyword = "[2021-06-02 04:05:47.029899 UTC] Team A: ajay hiro Team B: konark yong Team C: aman philp anandita";
     history.save(keyword);
-    assert_eq!(keyword, history.get_last_line());
+    assert_eq!(keyword, history.get_last_line().unwrap());
 }
 
 #[test]
 fn test_get_last_team(){
     let pwd = std::env::var("PWD").unwrap();
     let history = History::new(&pwd, "test.txt");
-    let team = history.get_last_team();
+    let team = history.get_last_team().unwrap();
     let expected_result = vec![vec!["ajay", "hiro"], vec!["konark", "yong"], vec!["aman", "philp", "anandita"]];
     assert_eq!(team, expected_result);
+}
+
+#[test]
+fn test_get_last_team_with_no_history(){
+    let pwd = std::env::var("PWD").unwrap();
+    let history = History::new(&pwd, "no_history.txt");
+    assert_eq!(history.get_last_team().is_none(),true);
 }
