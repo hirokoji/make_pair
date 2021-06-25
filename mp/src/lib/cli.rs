@@ -12,21 +12,20 @@ pub fn assign_cmd(members: String, history: History){
         return;
     }
 
-    let mut teams: Vec<Vec<String>>;
-
-    match history.get_last_team() {
+    let teams: Vec<Vec<String>> = match history.get_last_team() {
         Some(last_teams) => {
+            let mut teams = random_assign_teams(&members);
             loop {
+                if has_same_team(&teams, &last_teams) == false { break; }
                 teams = random_assign_teams(&members);
-                if has_same_team(&teams, &last_teams) == false {
-                    break;
-                }
             }
-        },
-        None => {
-            teams = random_assign_teams(&members);
+            teams
         }
-    }
+        None => {
+            let teams = random_assign_teams(&members);
+            teams
+        }
+    };
 
     let mut alphabet:u32 = 65; // 'A'
     let mut results:String = String::from(format!("[{}] ", Utc::now().to_string()));
