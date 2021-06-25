@@ -34,10 +34,14 @@ pub fn assign_cmd(members: String, history: History){
     let mut results:String = String::from(format!("[{}] ", Utc::now().to_string()));
     for team in teams {
         let team_name = char::from_u32(alphabet).unwrap();
-        let mut result = format!("Team {} (Meeting {}): ", team_name, room_map.get(&team_name).unwrap());
-        for member in team { result.push_str(&(format!("{} ", member))) }
+        let mut result = format!("Team {}: ", char::from_u32(alphabet).unwrap());
+        let mut custome_display = format!("Team {} (Meeting {}): ", team_name, room_map.get(&team_name).unwrap());
+        for member in team {
+            result.push_str(&(format!("{} ", member)));
+            custome_display.push_str(&(format!("{} ", member)));
+        }
 
-        print!("{}\n", result);
+        print!("{}\n", custome_display);
         results.push_str(&result);
         alphabet+=1;
     }
