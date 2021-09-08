@@ -1,13 +1,19 @@
 # mp (Make Pair with this command)
 This script assign members to make pair/mob programming team
 
+## Requirement
+
+-   Install [Rust](https://www.rust-lang.org/tools/install)
+
 ## Install
+
 ```shell
 ./install
 ```
 
 ## Usage
 You can assign pair/mob members randomly with the command.
+
 ```shell
 ➜ mp assign Walter,Ian,Gabe,Hiro,Ben,Charles
 Team A: Ian Ben
