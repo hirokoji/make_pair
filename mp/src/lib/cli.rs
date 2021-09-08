@@ -29,7 +29,7 @@ pub fn assign_cmd(members: String, history: History){
     };
 
     let mut alphabet:u32 = 65; // 'A'
-    let room_map: HashMap<char,char>= [('A', 'B'),('B', 'E'),('C', 'F')].iter().cloned().collect();
+    let room_map: HashMap<char,char>= [('A', 'B'),('B', 'C'),('C', 'D')].iter().cloned().collect();
 
     let mut results:String = String::from(format!("[{}] ", Utc::now().to_string()));
     for team in teams {
