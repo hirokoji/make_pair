@@ -1,4 +1,6 @@
 #!/bin/bash
 cd mp
+mkdir -p ~/.mp
+touch ~/.mp/mp_history
 cargo build --release
 cp target/release/mp /usr/local/bin/mp
